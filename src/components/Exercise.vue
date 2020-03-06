@@ -1,6 +1,6 @@
 <template>
   <v-content
-    :style="theme">
+    :style="getStyleTheme(themes.theme, 'background-color')">
     <v-app-bar
       app
       dark
@@ -70,7 +70,7 @@
     <div
       class="mx-auto"
       style="padding: 20px; width: 80%"
-      :style="theme1">
+      :style="themes.theme1">
       <v-row>
         <v-col cols="12">
           <h1 style="color: #a0a0a0">Exercise : {{exerciseName}}</h1>
@@ -83,14 +83,14 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <h2 style="color: #a0a0a0">Instructions :</h2>
             <v-textarea
               v-model="instructions"
               height="30rem"
               color="#a0a0a0"
               dark
-              :background-color="theme2_2"
+              :background-color="themes.theme2_2"
               solo
               flat
               no-resize/>
@@ -102,7 +102,7 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <h2 style="color: #a0a0a0">Test :</h2>
 
             <div class="custom-ace-editor" ref="editorTests">
@@ -119,7 +119,7 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <h2 style="color: #a0a0a0">Template :</h2>
 
             <div class="custom-ace-editor" ref="editorTemplate">
@@ -134,7 +134,7 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <div class="d-flex align-center">
               <h2 style="color: #a0a0a0">Sandbox :</h2>
               <v-spacer></v-spacer>
@@ -164,11 +164,11 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <h2 style="color: #a0a0a0">Console output :</h2>
             <code
             style="height: 45rem; color: #a0a0a0; padding: 2px; overflow: auto; font-size: 12px; width: 100%"
-            :style="theme2"
+            :style="themes.theme2"
               color="black"
             >{{consoleOutput}}</code>
           </v-card>
@@ -179,7 +179,7 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="theme1">
+            :style="themes.theme1">
             <h2 style="color: #a0a0a0">Test results :</h2>
             <div
               style="height: 45rem; color: #a0a0a0; padding: 15px; overflow: auto">
@@ -272,6 +272,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
+
 import ace from 'ace-builds/src-noconflict/ace'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-python'
@@ -282,11 +284,6 @@ export default {
   props: ['value'], // Mandatory to allow v-model
 
   data: () => ({
-    theme: 'background-color: #3d3d3d',
-    theme1: 'background-color: #232323',
-    theme1_2: '#232323',
-    theme2: 'background-color: #323232',
-    theme2_2: '#323232',
     dialogRun: false,
     dialogRunText: '',
     exerciseName: 'exerciseName',
@@ -305,6 +302,10 @@ export default {
     editorTemplate: null,
     editorSandbox: null
   }),
+  computed: {
+    ...mapState('themes', ['themes']),
+    ...mapGetters('themes', ['getStyleTheme'])
+  },
   mounted () {
     this.editorTests = ace.edit(this.$refs.editorTests)
     this.editorTemplate = ace.edit(this.$refs.editorTemplate)
