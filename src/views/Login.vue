@@ -1,10 +1,10 @@
 <template>
   <v-content
-    :style="getStyleTheme(themes.theme, 'background-color')"
+    :style="getStyleTheme(themes.Base, 'background-color')"
     style="min-height: 100%; overflow: hidden"
   >
     <v-card
-      :style="getStyleTheme(themes.themeDark, 'background-color')"
+      :style="getStyleTheme(themes.Dark, 'background-color')"
       dark
       width="50%"
       class="mx-auto"

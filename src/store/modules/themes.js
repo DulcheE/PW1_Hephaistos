@@ -1,9 +1,11 @@
 const state = {
   themes: {
-    theme: '#3d3d3d',
-    themeDark: '#232323',
-    themeDarkLight: '#323232',
-    themeLight: '#a0a0a0'
+    Base: '#3d3d3d',
+    Dark: '#232323',
+    DarkLight: '#323232',
+    Light: '#a0a0a0',
+    Success: '#117711',
+    Failure: '#771111'
   }
 }
 

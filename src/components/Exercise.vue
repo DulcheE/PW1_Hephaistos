@@ -1,6 +1,6 @@
 <template>
   <v-content
-    :style="getStyleTheme(themes.theme, 'background-color')">
+    :style="getStyleTheme(themes.Base, 'background-color')">
     <v-app-bar
       app
       dark
@@ -29,7 +29,7 @@
 
       <div class="d-flex align-center">
         <label
-            style:='text-color=white'>
+            style='color: white'>
             Exercise :
         </label>
         <v-text-field
@@ -70,10 +70,10 @@
     <div
       class="mx-auto"
       style="padding: 20px; width: 80%"
-      :style="themes.theme1">
+      :style="getStyleTheme(themes.Dark, 'background-color')">
       <v-row>
         <v-col cols="12">
-          <h1 style="color: #a0a0a0">Exercise : {{exerciseName}}</h1>
+          <h1 :style="getStyleTheme(themes.Light, 'color')">Exercise : {{exerciseName}}</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -83,14 +83,12 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
-            <h2 style="color: #a0a0a0">Instructions :</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')">
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Instructions :</h2>
             <v-textarea
               v-model="instructions"
               height="30rem"
-              color="#a0a0a0"
               dark
-              :background-color="themes.theme2_2"
               solo
               flat
               no-resize/>
@@ -102,8 +100,8 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
-            <h2 style="color: #a0a0a0">Test :</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')">
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Test :</h2>
 
             <div class="custom-ace-editor" ref="editorTests">
 
@@ -119,8 +117,8 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
-            <h2 style="color: #a0a0a0">Template :</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')">
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Template :</h2>
 
             <div class="custom-ace-editor" ref="editorTemplate">
 
@@ -134,9 +132,9 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
+            :style="getStyleTheme(themes.Dark, 'background-color')">
             <div class="d-flex align-center">
-              <h2 style="color: #a0a0a0">Sandbox :</h2>
+              <h2 :style="getStyleTheme(themes.Light, 'color')">Sandbox :</h2>
               <v-spacer></v-spacer>
               <v-btn
                 color="success"
@@ -164,13 +162,15 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
-            <h2 style="color: #a0a0a0">Console output :</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')"
+          >
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Console output :</h2>
             <code
-            style="height: 45rem; color: #a0a0a0; padding: 2px; overflow: auto; font-size: 12px; width: 100%"
-            :style="themes.theme2"
-              color="black"
-            >{{consoleOutput}}</code>
+            style="height: 45rem; padding: 5px; overflow: auto; font-size: 12px; width: 100%"
+            :style="getStyleTheme(themes.DarkLight, 'background-color') + '; ' + getStyleTheme(themes.Light, 'color')"
+            >
+              {{consoleOutput}}
+            </code>
           </v-card>
         </v-col>
         <v-col
@@ -179,16 +179,17 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="themes.theme1">
-            <h2 style="color: #a0a0a0">Test results :</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')">
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Test results :</h2>
             <div
-              style="height: 45rem; color: #a0a0a0; padding: 15px; overflow: auto">
+              style="height: 45rem; padding: 15px; overflow: auto"
+              :style="getStyleTheme(themes.Light, 'color')">
 
               <div v-for="(result, index) in resultTest" :key="result.name">
 
                 <v-card
                   v-if="!result.failure"
-                  color="#117711"
+                  :color="themes.Success"
                   dark
                   style="margin: 10px 0px 0px 0px;"
                   >
@@ -217,7 +218,7 @@
 
                 <v-card
                   v-if="result.failure"
-                  color="#771111"
+                  :color="themes.Failure"
                   dark
                   style="margin: 10px 0px 0px 0px;"
                   >
@@ -229,7 +230,7 @@
                       <v-list-item>
                         <v-list-item-content>
                           <v-list-item-content>{{result.failure.message}}</v-list-item-content>
-                          <code v-if="!result.stacktraceHidden" style="font-size: 12px">{{result.failure.stacktrace}}</code>
+                          <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
                           <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>

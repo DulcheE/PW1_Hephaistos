@@ -1,6 +1,6 @@
 <template>
   <v-content
-    :style="getStyleTheme(themes.theme, 'background-color')"
+    :style="getStyleTheme(themes.Base, 'background-color')"
     style="height: 100%">
     <v-app-bar
       app
@@ -28,7 +28,7 @@
 
       <v-spacer></v-spacer>
 
-      <h1 :style="getStyleTheme(themes.themeLight, 'color')">Modules</h1>
+      <h1 :style="getStyleTheme(themes.Light, 'color')">Modules</h1>
 
       <v-spacer></v-spacer>
 
@@ -45,7 +45,7 @@
     <div
       class="mx-auto"
       style="padding: 20px; width: 80%"
-      :style="getStyleTheme(themes.themeDark, 'background-color')">
+      :style="getStyleTheme(themes.Dark, 'background-color')">
       <v-row
         v-for="(Module) in modules" :key="Module.id">
         <v-col
@@ -54,8 +54,8 @@
           <v-card
             class="mx-auto"
             style="padding: 20px; margin-top: 20px"
-            :style="getStyleTheme(themes.themeDark, 'background-color')">
-            <h2 :style="getStyleTheme(themes.themeLight, 'color')">Module : {{Module.name}}</h2>
+            :style="getStyleTheme(themes.Dark, 'background-color')">
+            <h2 :style="getStyleTheme(themes.Light, 'color')">Module : {{Module.name}}</h2>
             <v-row>
               <v-col
                 v-for="(Session) in getSessionsByModuleId(Module.id)" :key="Session.id"
@@ -65,10 +65,10 @@
               >
                 <v-card
                   :href="'#/module/' + Module.id + '/session/' + Session.id"
-                  :style="getStyleTheme(themes.themeDarkLight, 'background-color')"
+                  :style="getStyleTheme(themes.DarkLight, 'background-color')"
                 >
                   <v-card-title
-                    :style="getStyleTheme(themes.themeLight, 'color')"
+                    :style="getStyleTheme(themes.Light, 'color')"
                   >
                     {{Session.name}}
                   </v-card-title>
