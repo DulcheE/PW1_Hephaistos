@@ -33,7 +33,6 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href=""
         text
         @click="logOut"
       >
@@ -72,6 +71,11 @@
                   >
                     {{Session.name}}
                   </v-card-title>
+                  <v-card-subtitle
+                    :style="getStyleTheme(themes.Light, 'color')"
+                  >
+                    Exercise{{(getExercisesBySessionId(Session.id).length > 1) ? 's' : ''}} {{getExercisesBySessionId(Session.id).length}}
+                  </v-card-subtitle>
                 </v-card>
               </v-col>
             </v-row>
@@ -95,26 +99,39 @@ export default {
     ...mapState('themes', ['themes']),
     ...mapState('modules', ['modules']),
     ...mapState('sessions', ['sessions']),
+    ...mapState('exercises', ['exercises']),
 
     // Getters
     ...mapGetters('themes', ['getStyleTheme']),
-    ...mapGetters('sessions', ['getSessionsByModuleId'])
+    ...mapGetters('sessions', ['getSessionsByModuleId']),
+    ...mapGetters('exercises', ['getExercisesBySessionId'])
   },
   async mounted () {
     await this.fetchModules()
+    console.log(this.modules)
+    console.log(this.modules.length)
 
     await Promise.all(
       this.modules.map(module_ => {
         this.fetchSessionsForModule({ moduleId: module_.id })
       })
     )
+    console.log(this.sessions)
+    console.log(this.sessions.length)
 
-    console.log(this.modules)
+    await Promise.all(
+      this.sessions.map(session => {
+        console.log('fetching exercises for session : ' + session.name + ' | ' + session.id)
+        this.fetchExercisesForSession({ sessionId: session.id })
+      })
+    )
+    console.log(this.exercises)
   },
   methods: {
     // Actions
     ...mapActions('modules', ['fetchModules']),
     ...mapActions('sessions', ['fetchSessionsForModule']),
+    ...mapActions('exercises', ['fetchExercisesForSession']),
 
     logOut () {
       this.$router.push({ name: 'Login' })

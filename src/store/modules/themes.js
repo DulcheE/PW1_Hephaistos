@@ -3,7 +3,7 @@ const state = {
     Base: '#3d3d3d',
     Dark: '#232323',
     DarkLight: '#323232',
-    Light: '#a0a0a0',
+    Light: '#c0c0c0',
     Success: '#117711',
     Failure: '#771111'
   }

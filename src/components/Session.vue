@@ -6,25 +6,28 @@
       app
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Efrei Logo"
-          class="shrink mr-2"
-          contain
-          src="@/assets/efrei_logo.png"
-          transition="scale-transition"
-          width="40"
-        />
+        <v-btn
+          :href="'#/modules'"
+          text
+        >
+          <v-img
+            alt="Efrei Logo"
+            class="shrink mr-2"
+            contain
+            src="@/assets/efrei_logo.png"
+            transition="scale-transition"
+            width="40"
+          />
 
-        <v-img
-          alt="Efrei Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="@/assets/efrei_name_logo.png"
-          width="100"
-        />
-      </div>
+          <v-img
+            alt="Efrei Name"
+            class="shrink mt-1 hidden-sm-and-down"
+            contain
+            min-width="100"
+            src="@/assets/efrei_name_logo.png"
+            width="100"
+          />
+        </v-btn>
 
       <v-spacer></v-spacer>
 
@@ -87,8 +90,8 @@
                 class="mx-auto"
                 style="padding: 20px; margin-top: 20px"
                 :style="getStyleTheme(themes.Dark, 'background-color')">
-                <h2 :style="getStyleTheme(themes.Light, 'color')">Instructions :</h2>
-                <p>test test test</p>
+                <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Instructions :</h2>
+                <p :style="getStyleTheme(themes.Light, 'color')">test test test</p>
               </v-card>
 
               <v-card
@@ -96,7 +99,7 @@
                 style="padding: 20px; margin-top: 20px"
                 :style="getStyleTheme(themes.Dark, 'background-color')">
                 <div class="d-flex align-center">
-                  <h2 :style="getStyleTheme(themes.Light, 'color')">Solution :</h2>
+                  <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Solution :</h2>
                   <v-spacer></v-spacer>
                   <v-btn
                     color="success"
@@ -123,7 +126,7 @@
                 class="mx-auto"
                 style="padding: 20px; margin-top: 20px; height: 100%"
                 :style="getStyleTheme(themes.Dark, 'background-color')">
-                <h2 :style="getStyleTheme(themes.Light, 'color')">Test results :</h2>
+                <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Test results :</h2>
                 <div
                   style="padding: 15px; overflow: auto"
                   :style="getStyleTheme(themes.Light, 'color')">
@@ -237,7 +240,8 @@ export default {
     sessionId: null,
     Session: null,
     Exercises: null,
-    resultTest: null,
+    lang: 'python',
+    resultTest: [],
     editorSolution: null
   }),
   computed: {
@@ -253,6 +257,7 @@ export default {
   },
   async mounted () {
     this.editorSolution = ace.edit(this.$refs.editorSolution)
+    this.initEditor(this.editorSolution, 'print("This is a solution")')
 
     this.moduleId = parseInt(this.$route.params.moduleId)
     this.sessionId = parseInt(this.$route.params.sessionId)
@@ -339,7 +344,7 @@ export default {
 <style scoped>
 .custom-ace-editor {
   position: relative;
-  height: 100%;
+  height: 26rem;
   margin-bottom: 30px;
 }
 </style>
