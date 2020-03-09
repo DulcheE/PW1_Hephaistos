@@ -19,20 +19,30 @@ async function beforeEnter (_to, _from, next) {
 // the function continues in the second panel, not enough space here
 const routes = [
   {
+    path: '/',
+    redirect: '/modules'
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
   },
   {
+    path: '/exercise',
+    name: 'Exercise',
+    component: () => import(/* webpackChunkName: "exercise" */ '../components/Exercise.vue'),
+    beforeEnter
+  },
+  {
     path: '/module/:moduleId/session/:sessionId',
-    name: 'Sessions',
+    name: 'Session',
     component: () => import(/* webpackChunkName: "exercise" */ '../components/Session.vue'),
     beforeEnter
   },
   {
-    path: '/exercise',
-    name: 'Exercise',
-    component: () => import(/* webpackChunkName: "exercise" */ '../components/Exercise.vue'),
+    path: '/module/:moduleId',
+    name: 'Module',
+    component: () => import(/* webpackChunkName: "exercise" */ '../components/Module.vue'),
     beforeEnter
   },
   {

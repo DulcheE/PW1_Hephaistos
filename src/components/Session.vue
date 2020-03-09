@@ -6,9 +6,8 @@
       app
       dark
     >
-        <v-btn
+        <a class="d-flex align-center"
           :href="'#/modules'"
-          text
         >
           <v-img
             alt="Efrei Logo"
@@ -27,11 +26,11 @@
             src="@/assets/efrei_name_logo.png"
             width="100"
           />
-        </v-btn>
+        </a>
 
       <v-spacer></v-spacer>
 
-      <h1 :style="getStyleTheme(themes.Light, 'color')">{{(Module !== null) ? Module.name : ''}}</h1>
+      <h1 :style="getStyleTheme(themes.Light, 'color')">{{(getModuleById(moduleId) != null) ? this.getModuleById(moduleId).name : ''}}</h1>
 
       <v-spacer></v-spacer>
 
@@ -56,47 +55,78 @@
           :style="getStyleTheme(themes.Dark, 'background-color')">
             <v-row style="height: 10%">
               <v-col md="12">
-                <h1 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">{{(Session != null) ? Session.name : ''}}</h1>
+                <h1 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">{{(getSessionById(sessionId) != null) ? getSessionById(sessionId).name : ''}}</h1>
               </v-col>
             </v-row>
 
             <div style="height: 90%; overflow-x: hidden; overflow-y: auto">
               <v-row
-                v-for="(Exercise) in Exercises" :key="Exercise.id">
+                v-for="(Exercise) in getExercisesBySessionId(sessionId)" :key="Exercise.id">
                 <v-col md="12">
                   <v-card
                     :style="getStyleTheme(themes.DarkLight, 'background-color')"
+                    @click="changeExercise(Exercise.id)"
                   >
-                    <v-card-title
-                      :style="getStyleTheme(themes.Light, 'color')"
+                    <v-row
+                      dense
                     >
-                      {{Exercise.title}}
-                    </v-card-title>
+                      <v-col sm="9">
+                        <v-card-title
+                          :style="getStyleTheme(themes.Light, 'color')"
+                        >
+                          {{Exercise.title}}
+                        </v-card-title>
+                      </v-col>
+                      <v-col sm="3">
+                        <div
+                          :style="getStyleTheme(themes.Light, 'color')"
+                          style="float: right; margin-right: 15px; margin-top: 15px"
+                        >
+                          {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-thermostat-box</v-icon>
+                        </div>
+                      </v-col>
+                    </v-row>
                   </v-card>
                 </v-col>
               </v-row>
             </div>
           </div>
         </v-col>
-        <v-col md="9" sm="12" style="height: 100%; padding: 20px"
+        <v-col md="9" sm="12" style="height: 100%; padding: 20px; overflow: auto"
           :style="getStyleTheme(themes.Dark, 'background-color')">
-
-          <v-row style="height: 100%"
-          >
+          <v-row>
+            <v-col sm="12">
+              <v-card
+                class="mx-auto"
+                style="padding-left: 20px"
+                :style="'background-color: ' + themes.Dark + '; padding-top: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-rigth: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-bottom: ' + ((instructionHidden) ? '0px' : '20px')">
+                <div class="d-flex align-center">
+                  <v-btn icon style="display: inline-block"
+                    @click="toggleInstructionHidden"
+                  >
+                    <v-icon :color="themes.Light">{{(instructionHidden) ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
+                  </v-btn>
+                  <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 2%; display: inline-block">{{(exercise != null) ? exercise.title : ''}} :</h2>
+                </div>
+                <div
+                  :style="getStyleTheme(themes.Light, 'color')"
+                  style="padding: 1rem 1rem 0 1rem"
+                  :hidden="instructionHidden"
+                >
+                  <div
+                    v-html="((exercise != null) ? exercise.instructions : '')"
+                  />
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col
               cols="6"
               md="6">
               <v-card
                 class="mx-auto"
-                style="padding: 20px; margin-top: 20px"
-                :style="getStyleTheme(themes.Dark, 'background-color')">
-                <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Instructions :</h2>
-                <p :style="getStyleTheme(themes.Light, 'color')">test test test</p>
-              </v-card>
-
-              <v-card
-                class="mx-auto"
-                style="padding: 20px; margin-top: 20px"
+                style="padding: 20px"
                 :style="getStyleTheme(themes.Dark, 'background-color')">
                 <div class="d-flex align-center">
                   <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Solution :</h2>
@@ -124,7 +154,7 @@
               md="6">
               <v-card
                 class="mx-auto"
-                style="padding: 20px; margin-top: 20px; height: 100%"
+                style="padding: 20px; margin-bottom: 20px; height: 96 %"
                 :style="getStyleTheme(themes.Dark, 'background-color')">
                 <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Test results :</h2>
                 <div
@@ -235,11 +265,11 @@ import testsPy from '@/assets/tests.txt'
 export default {
 
   data: () => ({
+    instructionHidden: false,
     moduleId: null,
-    Module: null,
     sessionId: null,
-    Session: null,
-    Exercises: null,
+    exerciseId: null,
+    exercise: null,
     lang: 'python',
     resultTest: [],
     editorSolution: null
@@ -253,43 +283,69 @@ export default {
 
     // Getters
     ...mapGetters('themes', ['getStyleTheme']),
-    ...mapGetters('sessions', ['getSession'])
+    ...mapGetters('modules', ['getModuleById']),
+    ...mapGetters('sessions', ['getSessionById']),
+    ...mapGetters('exercises', ['getExerciseById']),
+    ...mapGetters('exercises', ['getExercisesBySessionId'])
   },
   async mounted () {
-    this.editorSolution = ace.edit(this.$refs.editorSolution)
-    this.initEditor(this.editorSolution, 'print("This is a solution")')
-
     this.moduleId = parseInt(this.$route.params.moduleId)
     this.sessionId = parseInt(this.$route.params.sessionId)
+    this.exerciseId = parseInt(this.$route.params.exerciseId)
 
     await this.fetchModule({ id: this.moduleId })
-    this.Module = this.modules.find(module_ => module_.id === this.moduleId)
 
-    if (this.Module === undefined) {
+    if (this.getModuleById(this.moduleId) === undefined) {
       this.$router.push({ name: 'Modules' })
     }
 
     await this.fetchSession({ id: this.sessionId })
 
-    this.Session = this.sessions.find(session => session.id === this.sessionId)
+    if (this.getSessionById(this.sessionId) === undefined) {
+      this.$router.push({ name: 'Module', params: { moduleId: this.moduleId } })
+    }
 
-    await this.fetchExercisesForSession({ sessionId: this.Session.id })
+    await this.fetchExercisesForSession({ sessionId: this.sessionId })
 
-    this.Exercises = this.exercises.filter(exercice => exercice.sessionId === this.Session.id)
+    if (!!this.exerciseId === true) {
+      console.log('not null')
+      console.log(!!this.exerciseId)
+      this.exercise = this.getExerciseById(this.exerciseId)
+    } else {
+      console.log('null')
+      this.exercise = this.getExercisesBySessionId(this.sessionId)[0]
+    }
+
+    this.changeExercise(this.exercise.id)
   },
   methods: {
     // Actions
     ...mapActions('modules', ['fetchModule']),
     ...mapActions('sessions', ['fetchSession']),
+    ...mapActions('exercises', ['fetchExerciseForSession']),
     ...mapActions('exercises', ['fetchExercisesForSession']),
 
     logOut () {
       this.$router.push({ name: 'Login' })
     },
 
-    initEditor (editor, defaultValue) {
+    async changeExercise (exerciseId) {
+      await this.fetchExerciseForSession({ sessionId: this.sessionId, exerciseId })
+      this.exercise = this.getExerciseById(exerciseId)
+
+      this.instructionHidden = false
+
+      this.editorSolution = ace.edit(this.$refs.editorSolution)
+      this.initEditor(this.editorSolution, this.exercise.lang, 'print("This is a solution for ' + this.exercise.title + '")')
+    },
+
+    toggleInstructionHidden () {
+      this.instructionHidden = !this.instructionHidden
+    },
+
+    initEditor (editor, lang, defaultValue) {
       editor.setTheme('ace/theme/monokai') // Global theme for
-      editor.session.setMode(`ace/mode/${this.lang}`)
+      editor.session.setMode(`ace/mode/${lang}`)
 
       editor.selection.addRange()
 
@@ -344,7 +400,6 @@ export default {
 <style scoped>
 .custom-ace-editor {
   position: relative;
-  height: 26rem;
-  margin-bottom: 30px;
+  height: 34rem;
 }
 </style>
