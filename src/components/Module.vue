@@ -1,7 +1,7 @@
 <template>
-  <v-content
+  <div
     :style="getStyleTheme(themes.Base, 'background-color')"
-    style="height: 100%">
+    style="height: 100%; padding-top: 30px">
     <v-app-bar
       app
       dark
@@ -53,6 +53,7 @@
           md="12">
           <v-card
             class="mx-auto"
+            elevation="8"
             style="padding: 20px; margin-top: 20px"
             :style="getStyleTheme(themes.Dark, 'background-color')">
             <h2 :style="getStyleTheme(themes.Light, 'color')">Session : {{Session.name}}</h2>
@@ -72,6 +73,8 @@
                   >
                     <v-col sm="9">
                       <v-card-title
+                        class="text-truncate"
+                        style="font-size: 15px"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
                         {{Exercise.title}}
@@ -94,7 +97,7 @@
       </v-row>
     </div>
     <div style="padding-top: 20px"/>
-  </v-content>
+  </div>
 </template>
 
 <script>

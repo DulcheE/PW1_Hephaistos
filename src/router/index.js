@@ -28,27 +28,33 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
   },
   {
+    path: '/test',
+    name: 'test',
+    component: () => import(/* webpackChunkName: "test" */ '../views/test.vue'),
+    beforeEnter
+  },
+  {
     path: '/exercise',
     name: 'Exercise',
-    component: () => import(/* webpackChunkName: "exercise" */ '../components/Exercise.vue'),
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Exercise.vue'),
     beforeEnter
   },
   {
     path: '/module/:moduleId/session/:sessionId',
     name: 'Session',
-    component: () => import(/* webpackChunkName: "exercise" */ '../components/Session.vue'),
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Session.vue'),
     beforeEnter
   },
   {
     path: '/module/:moduleId',
     name: 'Module',
-    component: () => import(/* webpackChunkName: "exercise" */ '../components/Module.vue'),
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Module.vue'),
     beforeEnter
   },
   {
     path: '/modules',
     name: 'Modules',
-    component: () => import(/* webpackChunkName: "exercise" */ '../components/Modules.vue'),
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Modules.vue'),
     beforeEnter
   }
 ]

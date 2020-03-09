@@ -148,7 +148,7 @@
                   :style="getStyleTheme(themes.Dark, 'background-color')">
                   <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Tests :</h2>
                   <div
-                    style="padding: 15px; overflow-x: auto; height: 74.5vh"
+                    style="padding: 15px; overflow-x: auto; height: 65vh"
                     :style="getStyleTheme(themes.Light, 'color')">
 
                     <div v-if="(exerciseId != null) && (exercise != null)">
@@ -270,8 +270,8 @@ export default {
 
   data: () => ({
     instructionHidden: false,
-    moduleId: null,
-    sessionId: null,
+    moduleId: 1,
+    sessionId: 2,
     exerciseId: null,
     exercise: null,
     lang: 'python',
@@ -293,8 +293,6 @@ export default {
     ...mapGetters('exercises', ['getExercisesBySessionId'])
   },
   async mounted () {
-    this.moduleId = parseInt(this.$route.params.moduleId)
-    this.sessionId = parseInt(this.$route.params.sessionId)
     this.exerciseId = parseInt(this.$route.params.exerciseId)
 
     await this.fetchModule({ id: this.moduleId })
@@ -404,6 +402,6 @@ export default {
 <style scoped>
 .custom-ace-editor {
   position: relative;
-  height: 34rem;
+  height: 65vh;
 }
 </style>
