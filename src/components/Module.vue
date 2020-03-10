@@ -7,7 +7,7 @@
       dark
     >
       <a class="d-flex align-center"
-          :href="'#/modules'"
+        :href="'#/modules'"
       >
         <v-img
           alt="Hephaistos Logo"
@@ -20,17 +20,38 @@
 
         <v-img
           alt="Hephaistos Name"
-          class="shrink mt-1 hidden-sm-and-down"
+          class="shrink mt-1 d-none d-md-flex"
           contain
-          min-width="100"
           src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
           width="150"
+        />
+
+        <v-img
+          alt="Hephaistos Name"
+          class="shrink mt-1 d-none d-sm-flex d-md-none"
+          contain
+          src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
+          width="75"
         />
       </a>
 
       <v-spacer></v-spacer>
 
-      <h1 :style="getStyleTheme(themes.Light, 'color')">{{module.name}}</h1>
+      <h1
+        :style="getStyleTheme(themes.Light, 'color')"
+        class="d-none d-md-flex"
+      >
+        {{module.name}}
+      </h1>
+      <h1
+        :style="getStyleTheme(themes.Light, 'color')"
+        style="font-size: 1em"
+        class="d-sm-flex d-md-none"
+      >
+        {{module.name}}
+      </h1>
 
       <v-spacer></v-spacer>
 
@@ -63,7 +84,7 @@
             <v-row>
               <v-col
                 v-for="(Exercise) in getExercisesBySessionId(Session.id)" :key="Exercise.id"
-                cols="3"
+                cols="12"
                 md="3"
                 sm="6"
               >
@@ -71,33 +92,30 @@
                   @click="goToExercise(Session.id, Exercise.id)"
                   :style="getStyleTheme(themes.DarkLight, 'background-color')"
                 >
-                  <v-row
-                    dense
+                  <v-list-item
+                    style="height: 5em"
                   >
-                    <v-col sm="9">
-                      <v-card-title
+                    <v-list-item-content>
+                      <v-list-item-title
                         class="text-truncate"
-                        style="font-size: 15px"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
-                        {{Exercise.title}}
-                      </v-card-title>
-                      <v-card-subtitle
+                        <span>{{Exercise.title}}</span>
+                      </v-list-item-title>
+                      <v-spacer/>
+                      <v-list-item-subtitle
                         class="text-truncate"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
                         {{Exercise.lang}}
-                      </v-card-subtitle>
-                    </v-col>
-                    <v-col sm="3">
-                      <div
-                        :style="getStyleTheme(themes.Light, 'color')"
-                        style="float: right; margin-right: 15px; margin-top: 15px"
-                      >
-                        {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-thermostat-box</v-icon>
-                      </div>
-                    </v-col>
-                  </v-row>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-icon
+                      :style="'color: ' + themes.Light"
+                    >
+                      {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-thermostat-box</v-icon>
+                    </v-list-item-icon>
+                  </v-list-item>
                 </v-card>
               </v-col>
             </v-row>

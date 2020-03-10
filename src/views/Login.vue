@@ -14,19 +14,52 @@
             <div class="d-flex align-center justify-center">
               <v-img
                 alt="Hephaistos Logo"
-                class="shrink mr-2"
+                class="shrink mr-2 d-none d-lg-flex"
                 contain
                 src="@/assets/hephaistos_logo.png"
                 transition="scale-transition"
                 width="150"
               />
+              <v-img
+                alt="Hephaistos Logo"
+                class="shrink mr-2 d-none d-sm-flex d-lg-none"
+                contain
+                src="@/assets/hephaistos_logo.png"
+                transition="scale-transition"
+                width="75"
+              />
+              <v-img
+                alt="Hephaistos Logo"
+                class="shrink mr-2 d-flex d-sm-none"
+                contain
+                src="@/assets/hephaistos_logo.png"
+                transition="scale-transition"
+                width="50"
+              />
 
               <v-img
                 alt="Hephaistos Name"
-                class="shrink mt-1 hidden-md-and-down"
+                class="shrink mt-1 d-none d-lg-flex"
                 contain
                 src="@/assets/hephaistos_name_logo.png"
+                transition="fade-transition"
                 width="400"
+              />
+              <v-img
+                alt="Hephaistos Name"
+                class="shrink mt-1 d-none d-sm-flex d-lg-none"
+                contain
+                src="@/assets/hephaistos_name_logo.png"
+                transition="fade-transition"
+                width="200"
+              />
+              <v-img
+                alt="Hephaistos Name"
+                class="shrink mt-1 d-flex d-sm-none"
+                contain
+                src="@/assets/hephaistos_name_logo.png"
+                transition="fade-transition"
+                width="132"
               />
             </div>
           </v-card-title>

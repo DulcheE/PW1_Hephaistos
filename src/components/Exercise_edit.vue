@@ -374,7 +374,7 @@ export default {
       this.editorTests.setValue(this.tests)
       this.solution = this.editorSandbox.getValue()
 
-      this.axios.post('http://localhost:3000/api/v1/exercise/sandbox', {
+      this.axios.post('http://192.168.1.48:3000/api/v1/exercise/sandbox', {
         lang: this.lang,
         tests: this.tests,
         solution: this.solution

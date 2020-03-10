@@ -7,31 +7,52 @@
       app
       dark
     >
-        <a class="d-flex align-center"
-          :href="'#/modules'"
-        >
-          <v-img
-            alt="Hephaistos Logo"
-            class="shrink mr-2"
-            contain
-            src="@/assets/hephaistos_logo.png"
-            transition="scale-transition"
-            width="40"
-          />
+      <a class="d-flex align-center"
+        :href="'#/modules'"
+      >
+        <v-img
+          alt="Hephaistos Logo"
+          class="shrink mr-2"
+          contain
+          src="@/assets/hephaistos_logo.png"
+          transition="scale-transition"
+          width="40"
+        />
 
-          <v-img
-            alt="Hephaistos Name"
-            class="shrink mt-1 hidden-sm-and-down"
-            contain
-            min-width="100"
-            src="@/assets/hephaistos_name_logo.png"
-            width="150"
-          />
-        </a>
+        <v-img
+          alt="Hephaistos Name"
+          class="shrink mt-1 d-none d-md-flex"
+          contain
+          src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
+          width="150"
+        />
+
+        <v-img
+          alt="Hephaistos Name"
+          class="shrink mt-1 d-none d-sm-flex d-md-none"
+          contain
+          src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
+          width="75"
+        />
+      </a>
 
       <v-spacer></v-spacer>
 
-      <h1 :style="getStyleTheme(themes.Light, 'color')">{{(getModuleById(moduleId) != null) ? this.getModuleById(moduleId).name : ''}}</h1>
+      <h1
+        :style="getStyleTheme(themes.Light, 'color')"
+        class="d-none d-md-flex"
+      >
+        {{module.name}}
+      </h1>
+      <h1
+        :style="getStyleTheme(themes.Light, 'color')"
+        style="font-size: 1em"
+        class="d-sm-flex d-md-none"
+      >
+        {{module.name}}
+      </h1>
 
       <v-spacer></v-spacer>
 
@@ -46,6 +67,7 @@
     </v-app-bar>
 
     <v-navigation-drawer
+      class="d-none d-md-flex"
       absolute
       permanent
     >
@@ -74,211 +96,237 @@
         <v-divider/>
 
         <v-list
-          two-line
-          style="padding: 0px 5px 0px 0px">
+          style="padding: 0px 5px 0px 0px;">
           <v-list-item
-            v-for="(Exercise) in getExercisesBySessionId(sessionId)" :key="Exercise.id"
-            @click="goToExercise(Exercise.id)"
+            v-for="(exercise) in getExercisesBySessionId(sessionId)" :key="exercise.id"
+            two-line
+            @click="goToExercise(exercise.id)"
           >
-            <v-list-item-title
-              class="text-truncate"
-              style="font-size: 17px"
-              :style="getStyleTheme(themes.Light, 'color')"
-            >
-              <span>{{Exercise.title}}</span>
-            </v-list-item-title>
-            <v-list-item-subtitle
-              class="text-truncate"
-              :style="getStyleTheme(themes.Light, 'color')"
-            >
-              <span>{{Exercise.lang}}</span>
-            </v-list-item-subtitle>
+            <v-list-item-content>
+              <v-list-item-title
+                class="text-truncate"
+                :style="getStyleTheme(themes.Light, 'color')"
+              >
+                <span>{{exercise.title}}</span>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                class="text-truncate"
+                :style="getStyleTheme(themes.Light, 'color')"
+              >
+                <span>{{exercise.lang}}</span>
+              </v-list-item-subtitle>
+            </v-list-item-content>
             <v-list-item-icon
-              :style="'color: ' + themes.Light">
-              {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon :color="themes.Light">mdi-thermostat-box</v-icon>
+              :style="'color: ' + themes.Light"
+            >
+              {{(exercise.test_names != null) ? exercise.test_names.length : '0'}}<v-icon :color="themes.Light">mdi-thermostat-box</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list>
       </div>
     </v-navigation-drawer>
 
-    <div style="margin-left: 16rem; overflow: auto">
-      <div
-        class="mx-auto"
-        style="padding: 20px; width: 90%;"
-      >
-        <v-row>
-          <v-col md="12" sm="12" style="padding: 20px;"
-            :style="getStyleTheme(themes.Dark, 'background-color')">
-            <v-row>
-              <v-col sm="12">
-                <v-card
-                  class="mx-auto"
-                  style="padding-left: 20px; padding-right: 20px"
-                  :style="'background-color: ' + themes.Dark + '; padding-top: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-rigth: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-bottom: ' + ((instructionHidden) ? '0px' : '20px')">
-                  <div class="d-flex align-center">
-                    <v-btn icon style="display: inline-block"
-                      @click="toggleInstructionHidden"
-                    >
-                      <v-icon :color="themes.Light">{{(instructionHidden) ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
-                    </v-btn>
-                    <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 2%; display: inline-block">{{exercise.title}} :</h2>
-                  </div>
-                  <v-divider :hidden="instructionHidden"/>
-                  <div
-                    :style="getStyleTheme(themes.Light, 'color')"
-                    style="padding: 1rem 1rem 0 1rem"
-                    :hidden="instructionHidden"
-                  >
+    <div>
+      <div class="d-none" style="margin-left: 16rem"/>
+      <div style="margin-left: 16rem">
+        <div
+          class="mx-auto"
+          style="padding: 20px; width: 90%;"
+        >
+          <v-row>
+            <v-col md="12" sm="12" style="padding: 20px;"
+              :style="getStyleTheme(themes.Dark, 'background-color')">
+              <v-row>
+                <v-col sm="12">
+                  <v-card
+                    elevation="4"
+                    class="mx-auto"
+                    style="padding-left: 20px; padding-right: 20px"
+                    :style="'background-color: ' + themes.Dark + '; padding-top: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-rigth: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-bottom: ' + ((instructionHidden) ? '0px' : '20px')">
+                    <div class="d-flex align-center">
+                      <v-btn icon style="display: inline-block"
+                        @click="toggleInstructionHidden"
+                      >
+                        <v-icon :color="themes.Light">{{(instructionHidden) ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
+                      </v-btn>
+                      <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 2%; display: inline-block">{{exercise.title}} : </h2>
+                    </div>
+                    <v-divider :hidden="instructionHidden"/>
                     <div
-                      v-html="exercise.instructions"
-                    />
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                cols="6"
-                md="6">
-                <v-card
-                  class="mx-auto"
-                  style="padding: 20px"
-                  :style="getStyleTheme(themes.Dark, 'background-color')">
-                  <div class="d-flex align-center">
-                    <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Solution :</h2>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="success"
-                      class="mb-2"
-                      tile
-                      small
-                      @click="runSolution"
+                      :style="getStyleTheme(themes.Light, 'color')"
+                      style="padding: 1rem 1rem 0 1rem"
+                      :hidden="instructionHidden"
                     >
-                      Run
-                      <v-icon>mdi-play</v-icon>
-                    </v-btn>
-                  </div>
-
-                  <div class="custom-ace-editor" ref="editorSolution">
-
-                  </div>
-
-                </v-card>
-              </v-col>
-              <v-col
-                cols="6"
-                md="6">
-                <v-card
-                  class="mx-auto"
-                  style="padding: 20px;"
-                  :style="getStyleTheme(themes.Dark, 'background-color')">
-                  <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Tests :</h2>
-
-                  <v-divider/>
-
-                  <div
-                    style="padding: 15px; overflow-x: auto; height: 74.5vh"
-                    :style="getStyleTheme(themes.Light, 'color')">
-
-                    <div v-for="(result, index) in exercise.test_names" :key="result.name">
-
-                      <v-card
-                        v-if="(result.failure != undefined) && (!result.failure)"
-                        :color="themes.Success"
+                      <v-skeleton-loader
+                        :loading="exercise.instructions == null"
+                        transition="scale-transition"
+                        class="mx-auto"
+                        type="paragraph"
                         dark
-                        style="margin: 10px 0px 0px 0px;"
-                        >
-                        <v-row>
-                          <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                            <v-icon style="padding-left: 15px">mdi-check</v-icon>
-                          </v-col>
-                          <v-col md="11">
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </v-col>
-                        </v-row>
-                      </v-card>
+                      >
+                        <div>
+                          <div
+                            v-html="exercise.instructions"
+                          />
+                        </div>
+                      </v-skeleton-loader>
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="6"
+                  md="6">
+                  <v-card
+                    elevation="4"
+                    class="mx-auto"
+                    style="padding: 20px"
+                    :style="getStyleTheme(themes.Dark, 'background-color')">
+                    <div class="d-flex align-center">
+                      <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Solution :</h2>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="success"
+                        class="mb-2"
+                        tile
+                        small
+                        @click="runSolution"
+                      >
+                        Run
+                        <v-icon>mdi-play</v-icon>
+                      </v-btn>
+                    </div>
 
-                      <v-card
-                        v-else-if="result.failure"
-                        :color="themes.Failure"
-                        dark
-                        style="margin: 10px 0px 0px 0px;"
-                        >
-                        <v-row>
-                          <v-col md="1" class="d-flex align-center" style="max-width: 40px">
-                            <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
-                          </v-col>
-                          <v-col md="10">
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-content>{{result.failure.message}}</v-list-item-content>
-                                <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
-                                <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </v-col>
-
-                          <v-col md="1" style="max-width: 40px">
-                            <v-btn
-                              icon
-                              @click="closeResult(index)"
-                            >
-                              <v-icon>mdi-close-circle</v-icon>
-                            </v-btn>
-                            <v-btn
-                              icon
-                              v-if="result.stacktraceHidden"
-                              @click="result.stacktraceHidden = false"
-                            >
-                              <v-icon>mdi-chevron-down</v-icon>
-                            </v-btn>
-                            <v-btn
-                              icon
-                              v-if="!result.stacktraceHidden"
-                              @click="result.stacktraceHidden = true"
-                            >
-                              <v-icon>mdi-chevron-up</v-icon>
-                            </v-btn>
-                          </v-col>
-                        </v-row>
-                      </v-card>
-
-                      <v-card
-                        v-else
-                        :color="themes.DarkLight"
-                        dark
-                        style="margin: 10px 0px 0px 0px;"
-                        >
-                        <v-row>
-                          <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                            <v-icon style="padding-left: 15px">mdi-dots-horizontal</v-icon>
-                          </v-col>
-                          <v-col md="11" style="padding-left: 25px">
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-subtitle>{{result}}</v-list-item-subtitle>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </v-col>
-                        </v-row>
-                      </v-card>
+                    <div class="custom-ace-editor" ref="editorSolution">
 
                     </div>
 
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row>
-            </v-row>
+                  </v-card>
+                </v-col>
+                <v-col
+                  cols="6"
+                  md="6">
+                  <v-card
+                    elevation="4"
+                    class="mx-auto"
+                    style="padding: 20px;"
+                    :style="getStyleTheme(themes.Dark, 'background-color')"
+                  >
+                    <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Tests :</h2>
 
-          </v-col>
-        </v-row>
+                    <v-divider/>
+
+                    <div
+                      style="padding: 15px; overflow-x: auto; height: 74.5vh"
+                      :style="getStyleTheme(themes.Light, 'color')">
+
+                      <div v-for="(result, index) in exercise.test_names" :key="result.name">
+
+                        <v-card
+                          v-if="(result.failure != undefined) && (!result.failure)"
+                          :color="themes.Success"
+                          dark
+                          style="margin: 10px 0px 0px 0px;"
+                          >
+                          <v-row>
+                            <v-col md="1" class="d-flex align-center" style="max-width: 20px">
+                              <v-icon style="padding-left: 15px">mdi-check</v-icon>
+                            </v-col>
+                            <v-col md="11">
+                              <v-list-item>
+                                <v-list-item-content>
+                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-col>
+                          </v-row>
+                        </v-card>
+
+                        <v-card
+                          v-else-if="result.failure"
+                          :color="themes.Failure"
+                          dark
+                          style="margin: 10px 0px 0px 0px;"
+                          >
+                          <v-row>
+                            <v-col md="1" class="d-flex align-center" style="max-width: 40px">
+                              <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
+                            </v-col>
+                            <v-col md="10">
+                              <v-list-item>
+                                <v-list-item-content>
+                                  <v-list-item-content>{{result.failure.message}}</v-list-item-content>
+                                  <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
+                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-col>
+
+                            <v-col md="1" style="max-width: 40px">
+                              <v-btn
+                                icon
+                                @click="closeResult(index)"
+                              >
+                                <v-icon>mdi-close-circle</v-icon>
+                              </v-btn>
+                              <v-btn
+                                icon
+                                v-if="result.stacktraceHidden"
+                                @click="result.stacktraceHidden = false"
+                              >
+                                <v-icon>mdi-chevron-down</v-icon>
+                              </v-btn>
+                              <v-btn
+                                icon
+                                v-if="!result.stacktraceHidden"
+                                @click="result.stacktraceHidden = true"
+                              >
+                                <v-icon>mdi-chevron-up</v-icon>
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-card>
+
+                        <v-skeleton-loader
+                          v-else
+                          :loading="exercise.loading"
+                          transition="scale-transition"
+                          style="margin: 10px 0px 0px 0px;"
+                          type="image"
+                          dark
+                        >
+                          <v-card
+                            :color="themes.DarkLight"
+                            dark
+                            style="margin: 10px 0px 0px 0px;"
+                            >
+                            <v-row>
+                              <v-col md="1" class="d-flex align-center" style="max-width: 20px">
+                                <v-icon style="padding-left: 15px">mdi-dots-horizontal</v-icon>
+                              </v-col>
+                              <v-col md="11" style="padding-left: 25px">
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-subtitle>{{result}}</v-list-item-subtitle>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </v-col>
+                            </v-row>
+                          </v-card>
+                        </v-skeleton-loader>
+                      </div>
+
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row>
+              </v-row>
+
+            </v-col>
+          </v-row>
+        </div>
       </div>
     </div>
 
@@ -307,7 +355,7 @@ export default {
     ...mapState('modules', ['modules']),
     ...mapState('sessions', ['sessions']),
     ...mapState('exercises', ['exercises']),
-    ...mapState('attempts', ['attempts']),
+    ...mapState('attempts', ['attempts', 'lastAttemptResults']),
 
     // Getters
     ...mapGetters('themes', ['getStyleTheme']),
@@ -315,8 +363,13 @@ export default {
     ...mapGetters('sessions', ['getSessionById']),
     ...mapGetters('exercises', ['getExerciseById', 'getExercisesBySessionId']),
     ...mapGetters('attempts', ['getLastAttemptForExercise']),
+
+    // Customs
     moduleId () {
       return parseInt(this.$route.params.moduleId)
+    },
+    module () {
+      return this.modules.find(module => module.id === this.moduleId) || { name: 'Loading...' }
     },
     sessionId () {
       return parseInt(this.$route.params.sessionId)
@@ -325,7 +378,10 @@ export default {
       return parseInt(this.$route.params.exerciseId)
     },
     exercise () {
-      return this.getExerciseById({ id: this.exerciseId }) || { title: 'Loading...', lang: 'python' }
+      return this.getExerciseById(this.exerciseId) || { lang: 'python', loading: true }
+    },
+    lastAttempt () {
+      return this.getLastAttemptForExercise(this.exerciseId)
     }
   },
 
@@ -344,16 +400,37 @@ export default {
 
     await this.fetchExercisesForSession({ sessionId: this.sessionId })
 
-    this.editorSolution = ace.edit(this.$refs.editorSolution)
-    this.initEditor(this.editorSolution, this.exercise.lang, 'print("This is a solution for ' + this.exercise.title + '")')
+    this.updateView()
   },
+
+  watch: {
+    exerciseId: function (newV, oldV) {
+      this.updateView()
+      this.instructionHidden = false
+    }
+  },
+
   methods: {
     // Actions
     ...mapActions('modules', ['fetchModule']),
     ...mapActions('sessions', ['fetchSession']),
     ...mapActions('exercises', ['fetchExerciseForSession']),
     ...mapActions('exercises', ['fetchExercisesForSession']),
+    ...mapActions('attempts', ['fetchLastAttemptForExercise']),
     ...mapActions('attempts', ['createAttemptForSession']),
+
+    async updateView () {
+      await this.fetchExerciseForSession({ sessionId: this.sessionId, exerciseId: this.exerciseId })
+
+      console.log(this.exercise)
+
+      await this.fetchLastAttemptForExercise({ sessionId: this.sessionId, exerciseId: this.exerciseId })
+
+      this.editorSolution = ace.edit(this.$refs.editorSolution)
+
+      const solutionDefault = (this.lastAttempt != null) ? this.lastAttempt.solution : 'print("This is a solution for ' + this.exercise.title + '")'
+      this.initEditor(this.editorSolution, this.exercise.lang, solutionDefault)
+    },
 
     logOut () {
       this.$router.push({ name: 'Login' })
@@ -395,11 +472,7 @@ export default {
 
       await this.createAttemptForSession({ exerciseId: this.exercise.id, sessionId: this.sessionId, solution })
 
-      console.log(this.attempts)
-
       await this.getLastAttemptForExercise({ exerciseId: this.exerciseId })
-
-      console.log(this.attempts)
     }
   }
 }

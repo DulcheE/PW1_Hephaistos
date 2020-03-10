@@ -6,7 +6,8 @@
       app
       dark
     >
-      <div class="d-flex align-center">
+      <div class="d-flex align-center"
+      >
         <v-img
           alt="Hephaistos Logo"
           class="shrink mr-2"
@@ -18,11 +19,20 @@
 
         <v-img
           alt="Hephaistos Name"
-          class="shrink mt-1 hidden-sm-and-down"
+          class="shrink mt-1 d-none d-md-flex"
           contain
-          min-width="100"
           src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
           width="150"
+        />
+
+        <v-img
+          alt="Hephaistos Name"
+          class="shrink mt-1 d-none d-sm-flex d-md-none"
+          contain
+          src="@/assets/hephaistos_name_logo.png"
+          transition="fade-transition"
+          width="75"
         />
       </div>
 
@@ -62,34 +72,29 @@
 
             <v-row>
               <v-col
-                xs="12" sm="6" md="3"
+                cols="12" sm="6" md="3"
                 v-for="(session) in getSessionsByModuleId(module.id)" :key="session.id"
               >
                 <v-card
                   :href="'#/module/' + module.id + '/session/' + session.id + '/exercise/' + firstExerciseForSession(session.id).id"
                   :style="getStyleTheme(themes.DarkLight, 'background-color')"
                 >
-                  <v-row
-                    dense
+                  <v-list-item
+                    style="height: 5em"
                   >
-                    <v-col sm="9">
-                      <v-card-title
+                    <v-list-item-content>
+                      <v-list-item-title
                         class="text-truncate"
-                        style="font-size: 17px"
+                        style="font-size: 1.5em"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
                         {{session.name}}
-                      </v-card-title>
-                    </v-col>
-                    <v-col sm="3">
-                      <div
-                        :style="getStyleTheme(themes.Light, 'color')"
-                        style="float: right; margin-right: 15px; margin-top: 15px"
-                      >
-                        {{getExercisesBySessionId(session.id).length}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-code-braces-box</v-icon>
-                      </div>
-                    </v-col>
-                  </v-row>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-icon :style="'color: ' + themes.Light">
+                      {{getExercisesBySessionId(session.id).length}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-code-braces-box</v-icon>
+                    </v-list-item-icon>
+                  </v-list-item>
                 </v-card>
               </v-col>
             </v-row>

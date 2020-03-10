@@ -46,6 +46,7 @@
     </v-app-bar>
 
     <v-navigation-drawer
+      class="d-none d-md-flex"
       absolute
       permanent
     >
@@ -76,181 +77,12 @@
       </div>
     </v-navigation-drawer>
 
-    <div style="margin-left: 16rem; overflow: auto">
-      <div
-        class="mx-auto"
-        style="padding: 20px; width: 90%;"
-      >
-        <v-row>
-          <v-col md="12" sm="12" style="padding: 20px;"
-            :style="getStyleTheme(themes.Dark, 'background-color')">
-            <v-row>
-              <v-col sm="12">
-                <v-card
-                  class="mx-auto"
-                  style="padding-left: 20px"
-                  :style="'background-color: ' + themes.Dark + '; padding-top: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-rigth: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-bottom: ' + ((instructionHidden) ? '0px' : '20px')">
-                  <div class="d-flex align-center">
-                    <v-btn icon style="display: inline-block"
-                      @click="toggleInstructionHidden"
-                    >
-                      <v-icon :color="themes.Light">{{(instructionHidden) ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
-                    </v-btn>
-                    <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 2%; display: inline-block">{{(exercise != null) ? exercise.title : ''}} :</h2>
-                  </div>
-                  <div
-                    :style="getStyleTheme(themes.Light, 'color')"
-                    style="padding: 1rem 1rem 0 1rem"
-                    :hidden="instructionHidden"
-                  >
-                    <div
-                      v-html="((exercise != null) ? exercise.instructions : '')"
-                    />
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                cols="6"
-                md="6">
-                <v-card
-                  class="mx-auto"
-                  style="padding: 20px"
-                  :style="getStyleTheme(themes.Dark, 'background-color')">
-                  <div class="d-flex align-center">
-                    <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Solution :</h2>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="success"
-                      class="mb-2"
-                      tile
-                      small
-                      @click="runSolution"
-                    >
-                      Run
-                      <v-icon>mdi-play</v-icon>
-                    </v-btn>
-                  </div>
-
-                  <div class="custom-ace-editor" ref="editorSolution">
-
-                  </div>
-
-                </v-card>
-              </v-col>
-              <v-col
-                cols="6"
-                md="6">
-                <v-card
-                  class="mx-auto"
-                  style="padding: 20px;"
-                  :style="getStyleTheme(themes.Dark, 'background-color')">
-                  <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Tests :</h2>
-                  <div
-                    style="padding: 15px; overflow-x: auto; height: 65vh"
-                    :style="getStyleTheme(themes.Light, 'color')">
-
-                    <div v-if="(exerciseId != null) && (exercise != null)">
-                      <div v-for="(result, index) in exercise.test_names" :key="result.name">
-
-                        <v-card
-                          v-if="(result.failure != undefined) && (!result.failure)"
-                          :color="themes.Success"
-                          dark
-                          style="margin: 10px 0px 0px 0px;"
-                          >
-                          <v-row>
-                            <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                              <v-icon style="padding-left: 15px">mdi-check</v-icon>
-                            </v-col>
-                            <v-col md="11">
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                        <v-card
-                          v-else-if="result.failure"
-                          :color="themes.Failure"
-                          dark
-                          style="margin: 10px 0px 0px 0px;"
-                          >
-                          <v-row>
-                            <v-col md="1" class="d-flex align-center" style="max-width: 40px">
-                              <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
-                            </v-col>
-                            <v-col md="10">
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-content>{{result.failure.message}}</v-list-item-content>
-                                  <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
-                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </v-col>
-
-                            <v-col md="1" style="max-width: 40px">
-                              <v-btn
-                                icon
-                                @click="closeResult(index)"
-                              >
-                                <v-icon>mdi-close-circle</v-icon>
-                              </v-btn>
-                              <v-btn
-                                icon
-                                v-if="result.stacktraceHidden"
-                                @click="result.stacktraceHidden = false"
-                              >
-                                <v-icon>mdi-chevron-down</v-icon>
-                              </v-btn>
-                              <v-btn
-                                icon
-                                v-if="!result.stacktraceHidden"
-                                @click="result.stacktraceHidden = true"
-                              >
-                                <v-icon>mdi-chevron-up</v-icon>
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                        <v-card
-                          v-else
-                          :color="themes.DarkLight"
-                          dark
-                          style="margin: 10px 0px 0px 0px;"
-                          >
-                          <v-row>
-                            <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                              <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
-                            </v-col>
-                            <v-col md="11" style="padding-left: 25px">
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-subtitle>{{result}}</v-list-item-subtitle>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                      </div>
-                    </div>
-
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row>
-            </v-row>
-
-          </v-col>
-        </v-row>
+    <div style="background-color: yellow;">
+      <div class="d-md-inline-block d-none" style="background-color: red; margin-left: 16rem;"/>
+      <div class="d-inline-block" style="background-color: blue; padding: 20px; width: 80%">
+        <div class="mx-auto" style="width: 100%">
+          t
+        </div>
       </div>
     </div>
 
