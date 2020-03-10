@@ -10,27 +10,27 @@
           :href="'#/modules'"
       >
         <v-img
-          alt="Efrei Logo"
+          alt="Hephaistos Logo"
           class="shrink mr-2"
           contain
-          src="@/assets/efrei_logo.png"
+          src="@/assets/hephaistos_logo.png"
           transition="scale-transition"
           width="40"
         />
 
         <v-img
-          alt="Efrei Name"
+          alt="Hephaistos Name"
           class="shrink mt-1 hidden-sm-and-down"
           contain
           min-width="100"
-          src="@/assets/efrei_name_logo.png"
-          width="100"
+          src="@/assets/hephaistos_name_logo.png"
+          width="150"
         />
       </a>
 
       <v-spacer></v-spacer>
 
-      <h1 :style="getStyleTheme(themes.Light, 'color')">{{(Module !== null) ? Module.name : ''}}</h1>
+      <h1 :style="getStyleTheme(themes.Light, 'color')">{{module.name}}</h1>
 
       <v-spacer></v-spacer>
 
@@ -115,9 +115,6 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
 
   data: () => ({
-    moduleId: null,
-    Module: null,
-    Sessions: null
   }),
   computed: {
     // States
@@ -129,19 +126,20 @@ export default {
     // Getters
     ...mapGetters('themes', ['getStyleTheme']),
     ...mapGetters('sessions', ['getSessionsByModuleId']),
-    ...mapGetters('exercises', ['getExercisesBySessionId'])
+    ...mapGetters('exercises', ['getExercisesBySessionId']),
+
+    // Customs
+    moduleId () {
+      return parseInt(this.$route.params.moduleId)
+    },
+    module () {
+      return this.modules.find(module => module.id === this.moduleId) || { name: 'Loading...' }
+    }
   },
   async mounted () {
-    this.moduleId = parseInt(this.$route.params.moduleId)
-
-    console.log('begin')
-
     await this.fetchModule({ id: this.moduleId })
-    this.Module = this.modules.find(module_ => module_.id === this.moduleId)
 
-    console.log('after module')
-
-    if (this.Module === undefined) {
+    if (this.module === null) {
       this.$router.push({ name: 'Modules' })
     }
 
@@ -150,16 +148,12 @@ export default {
         return this.fetchSessionsForModule({ moduleId: module_.id })
       })
     )
-    console.log(this.sessions)
-    console.log(this.sessions.length)
 
     await Promise.all(
       this.sessions.map(session => {
-        console.log('fetching exercises for session : ' + session.name + ' | ' + session.id)
         return this.fetchExercisesForSession({ sessionId: session.id })
       })
     )
-    console.log(this.exercises)
   },
   methods: {
     // Actions
@@ -172,7 +166,7 @@ export default {
     },
 
     goToExercise (sessionId, exerciseId) {
-      this.$router.push({ name: 'Session', params: { moduleId: this.moduleId, sessionId, exerciseId } })
+      this.$router.push({ name: 'Exercise', params: { moduleId: this.moduleId, sessionId, exerciseId } })
     }
   }
 }

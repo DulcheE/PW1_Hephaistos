@@ -34,15 +34,15 @@ const routes = [
     beforeEnter
   },
   {
-    path: '/exercise',
-    name: 'Exercise',
-    component: () => import(/* webpackChunkName: "exercise" */ '../views/Exercise.vue'),
+    path: '/exercise_edit',
+    name: 'Exercise_edit',
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Exercise_edit.vue'),
     beforeEnter
   },
   {
-    path: '/module/:moduleId/session/:sessionId',
-    name: 'Session',
-    component: () => import(/* webpackChunkName: "exercise" */ '../views/Session.vue'),
+    path: '/module/:moduleId/session/:sessionId/exercise/:exerciseId',
+    name: 'Exercise',
+    component: () => import(/* webpackChunkName: "exercise" */ '../views/Exercise.vue'),
     beforeEnter
   },
   {

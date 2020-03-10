@@ -8,21 +8,21 @@
     >
       <div class="d-flex align-center">
         <v-img
-          alt="Efrei Logo"
+          alt="Hephaistos Logo"
           class="shrink mr-2"
           contain
-          src="@/assets/efrei_logo.png"
+          src="@/assets/hephaistos_logo.png"
           transition="scale-transition"
           width="40"
         />
 
         <v-img
-          alt="Efrei Name"
+          alt="Hephaistos Name"
           class="shrink mt-1 hidden-sm-and-down"
           contain
           min-width="100"
-          src="@/assets/efrei_name_logo.png"
-          width="100"
+          src="@/assets/hephaistos_name_logo.png"
+          width="150"
         />
       </div>
 
@@ -46,7 +46,7 @@
       style="padding: 20px; width: 80%"
       :style="getStyleTheme(themes.Dark, 'background-color')">
       <v-row
-        v-for="(Module) in modules" :key="Module.id">
+        v-for="(module) in modules" :key="module.id">
         <v-col
           md="12">
           <v-card
@@ -54,21 +54,19 @@
             elevation="8"
             style="padding: 20px; margin-top: 20px"
             :style="getStyleTheme(themes.Dark, 'background-color')">
-            <v-btn text :href="'#/module/' + Module.id">
-              <h2 :style="getStyleTheme(themes.Light, 'color')">Module : {{Module.name}}</h2>
+            <v-btn text :href="'#/module/' + module.id">
+              <h2 :style="getStyleTheme(themes.Light, 'color')">Module : {{module.name}}</h2>
             </v-btn>
 
             <v-divider/>
 
             <v-row>
               <v-col
-                v-for="(Session) in getSessionsByModuleId(Module.id)" :key="Session.id"
-                cols="3"
-                md="3"
-                sm="6"
+                xs="12" sm="6" md="3"
+                v-for="(session) in getSessionsByModuleId(module.id)" :key="session.id"
               >
                 <v-card
-                  :href="'#/module/' + Module.id + '/session/' + Session.id"
+                  :href="'#/module/' + module.id + '/session/' + session.id + '/exercise/' + firstExerciseForSession(session.id).id"
                   :style="getStyleTheme(themes.DarkLight, 'background-color')"
                 >
                   <v-row
@@ -80,7 +78,7 @@
                         style="font-size: 17px"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
-                        {{Session.name}}
+                        {{session.name}}
                       </v-card-title>
                     </v-col>
                     <v-col sm="3">
@@ -88,7 +86,7 @@
                         :style="getStyleTheme(themes.Light, 'color')"
                         style="float: right; margin-right: 15px; margin-top: 15px"
                       >
-                        {{getExercisesBySessionId(Session.id).length}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-code-braces-box</v-icon>
+                        {{getExercisesBySessionId(session.id).length}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-code-braces-box</v-icon>
                       </div>
                     </v-col>
                   </v-row>
@@ -124,24 +122,18 @@ export default {
   },
   async mounted () {
     await this.fetchModules()
-    console.log(this.modules)
-    console.log(this.modules.length)
 
     await Promise.all(
       this.modules.map(module => {
         return this.fetchSessionsForModule({ moduleId: module.id })
       })
     )
-    console.log(this.sessions)
-    console.log(this.sessions.length)
 
     await Promise.all(
       this.sessions.map(session => {
-        console.log('fetching exercises for session : ' + session.name + ' (' + session.id + ')')
         return this.fetchExercisesForSession({ sessionId: session.id })
       })
     )
-    console.log(this.exercises)
   },
   methods: {
     // Actions
@@ -151,6 +143,10 @@ export default {
 
     logOut () {
       this.$router.push({ name: 'Login' })
+    },
+
+    firstExerciseForSession (sessionId) {
+      return this.getExercisesBySessionId(sessionId)[0] || { title: 'loading' }
     }
   }
 }

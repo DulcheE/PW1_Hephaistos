@@ -8,39 +8,37 @@
       dark
       width="50%"
       class="mx-auto"
-      style="padding: 20px; margin-top: 20px">
-      <v-container>
+      style="margin-top: 20px">
+        <v-card>
+          <v-card-title class="d-flex align-center justify-center">
+            <div class="d-flex align-center justify-center">
+              <v-img
+                alt="Hephaistos Logo"
+                class="shrink mr-2"
+                contain
+                src="@/assets/hephaistos_logo.png"
+                transition="scale-transition"
+                width="150"
+              />
+
+              <v-img
+                alt="Hephaistos Name"
+                class="shrink mt-1 hidden-md-and-down"
+                contain
+                src="@/assets/hephaistos_name_logo.png"
+                width="400"
+              />
+            </div>
+          </v-card-title>
+        </v-card>
         <v-form
+          style="padding: 40px 20px"
           v-model="formValid">
           <v-row>
-            <v-col cols="12">
-              <div class="d-flex align-center">
-                <v-img
-                  alt="Efrei Logo"
-                  class="shrink mr-2"
-                  contain
-                  src="@/assets/efrei_logo.png"
-                  transition="scale-transition"
-                  width="150"
-                />
-
-                <v-img
-                  alt="Efrei Name"
-                  class="shrink mt-1 hidden-sm-and-down"
-                  contain
-                  min-width="300"
-                  src="@/assets/efrei_name_logo.png"
-                  width="300"
-                />
-              </div>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
+            <v-col cols="12" :style="'color: ' + themes.Light">
               <h1>{{title}}</h1>
             </v-col>
           </v-row>
-          <v-form>
             <v-card
               class="mx-auto"
               color="#da6666"
@@ -67,7 +65,6 @@
                   </v-btn>
               </v-row>
             </v-card>
-          </v-form>
           <v-row>
             <v-col
               cols="12"
@@ -90,7 +87,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn tile color="primary"
+              <v-btn tile :color="themes.DarkLight"
                 :disabled="!formValid"
                 :loading="submitBtnLoading"
                 @click="submitBtnClick">
@@ -99,7 +96,6 @@
             </v-col>
           </v-row>
         </v-form>
-      </v-container>
     </v-card>
   </v-content>
 </template>
