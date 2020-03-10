@@ -57,6 +57,9 @@
             <v-btn text :href="'#/module/' + Module.id">
               <h2 :style="getStyleTheme(themes.Light, 'color')">Module : {{Module.name}}</h2>
             </v-btn>
+
+            <v-divider/>
+
             <v-row>
               <v-col
                 v-for="(Session) in getSessionsByModuleId(Module.id)" :key="Session.id"

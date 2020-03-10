@@ -57,6 +57,9 @@
             style="padding: 20px; margin-top: 20px"
             :style="getStyleTheme(themes.Dark, 'background-color')">
             <h2 :style="getStyleTheme(themes.Light, 'color')">Session : {{Session.name}}</h2>
+
+            <v-divider/>
+
             <v-row>
               <v-col
                 v-for="(Exercise) in getExercisesBySessionId(Session.id)" :key="Exercise.id"
@@ -79,6 +82,12 @@
                       >
                         {{Exercise.title}}
                       </v-card-title>
+                      <v-card-subtitle
+                        class="text-truncate"
+                        :style="getStyleTheme(themes.Light, 'color')"
+                      >
+                        {{Exercise.lang}}
+                      </v-card-subtitle>
                     </v-col>
                     <v-col sm="3">
                       <div

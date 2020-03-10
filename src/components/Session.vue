@@ -53,20 +53,46 @@
         style="padding: 5px; min-height: 100%"
         :style="getStyleTheme(themes.Dark, 'background-color')">
 
-        <h1 :style="getStyleTheme(themes.Light, 'color')" style="height: 5%; margin-top: 5px; padding-left: 5%">{{(getSessionById(sessionId) != null) ? getSessionById(sessionId).name : ''}}</h1>
+        <div class="d-flex align-center">
+          <v-btn
+            icon
+            :color="themes.Light"
+            class="d-inline-block"
+            @click="$router.push({ name: 'Module', params: { moduleId } })"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <h1
+            class="d-inline-block"
+            :style="getStyleTheme(themes.Light, 'color')"
+            style="height: 5%; margin-top: 5px; padding-left: 5%"
+          >
+            {{(getSessionById(sessionId) != null) ? getSessionById(sessionId).name : ''}}
+          </h1>
+        </div>
 
-        <v-list style="overflow-y: auto; padding: 0px 5px 0px 0px">
+        <v-divider/>
+
+        <v-list
+          two-line
+          style="padding: 0px 5px 0px 0px">
           <v-list-item
             v-for="(Exercise) in getExercisesBySessionId(sessionId)" :key="Exercise.id"
             @click="changeExercise(Exercise.id)"
           >
-            <v-list-item-content
+            <v-list-item-title
               class="text-truncate"
               style="font-size: 17px"
               :style="getStyleTheme(themes.Light, 'color')"
             >
               <span>{{Exercise.title}}</span>
-            </v-list-item-content>
+            </v-list-item-title>
+            <v-list-item-subtitle
+              class="text-truncate"
+              :style="getStyleTheme(themes.Light, 'color')"
+            >
+              <span>{{Exercise.lang}}</span>
+            </v-list-item-subtitle>
             <v-list-item-icon
               :style="'color: ' + themes.Light">
               {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon :color="themes.Light">mdi-thermostat-box</v-icon>
@@ -88,7 +114,7 @@
               <v-col sm="12">
                 <v-card
                   class="mx-auto"
-                  style="padding-left: 20px"
+                  style="padding-left: 20px; padding-right: 20px"
                   :style="'background-color: ' + themes.Dark + '; padding-top: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-rigth: ' + ((instructionHidden) ? '0px' : '20px') + '; padding-bottom: ' + ((instructionHidden) ? '0px' : '20px')">
                   <div class="d-flex align-center">
                     <v-btn icon style="display: inline-block"
@@ -98,6 +124,7 @@
                     </v-btn>
                     <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 2%; display: inline-block">{{(exercise != null) ? exercise.title : ''}} :</h2>
                   </div>
+                  <v-divider :hidden="instructionHidden"/>
                   <div
                     :style="getStyleTheme(themes.Light, 'color')"
                     style="padding: 1rem 1rem 0 1rem"
@@ -147,6 +174,9 @@
                   style="padding: 20px;"
                   :style="getStyleTheme(themes.Dark, 'background-color')">
                   <h2 :style="getStyleTheme(themes.Light, 'color')" style="padding-left: 5%">Tests :</h2>
+
+                  <v-divider/>
+
                   <div
                     style="padding: 15px; overflow-x: auto; height: 74.5vh"
                     :style="getStyleTheme(themes.Light, 'color')">
@@ -227,7 +257,7 @@
                           >
                           <v-row>
                             <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                              <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
+                              <v-icon style="padding-left: 15px">mdi-dots-horizontal</v-icon>
                             </v-col>
                             <v-col md="11" style="padding-left: 25px">
                               <v-list-item>
@@ -264,7 +294,6 @@ import ace from 'ace-builds/src-noconflict/ace'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/webpack-resolver'
-import testsPy from '@/assets/tests.txt'
 
 export default {
 
@@ -284,13 +313,15 @@ export default {
     ...mapState('modules', ['modules']),
     ...mapState('sessions', ['sessions']),
     ...mapState('exercises', ['exercises']),
+    ...mapState('attempts', ['attempts']),
 
     // Getters
     ...mapGetters('themes', ['getStyleTheme']),
     ...mapGetters('modules', ['getModuleById']),
     ...mapGetters('sessions', ['getSessionById']),
     ...mapGetters('exercises', ['getExerciseById']),
-    ...mapGetters('exercises', ['getExercisesBySessionId'])
+    ...mapGetters('exercises', ['getExercisesBySessionId']),
+    ...mapGetters('attempts', ['getLastAttemptForExercise'])
   },
   async mounted () {
     this.moduleId = parseInt(this.$route.params.moduleId)
@@ -328,6 +359,7 @@ export default {
     ...mapActions('sessions', ['fetchSession']),
     ...mapActions('exercises', ['fetchExerciseForSession']),
     ...mapActions('exercises', ['fetchExercisesForSession']),
+    ...mapActions('attempts', ['createAttemptForSession']),
 
     logOut () {
       this.$router.push({ name: 'Login' })
@@ -368,34 +400,18 @@ export default {
       editor.setValue(defaultValue)
     },
 
-    runSolution () {
-      console.log('running sandbox...')
+    async runSolution () {
+      console.log('running solution...')
 
-      this.tests = testsPy
-      this.editorTests.setValue(this.tests)
-      this.solution = this.editorSandbox.getValue()
+      const solution = this.editorSolution.getValue()
 
-      this.axios.post('http://localhost:3000/api/v1/exercise/sandbox', {
-        lang: this.lang,
-        tests: this.tests,
-        solution: this.solution
-      })
-        .then((response) => {
-          console.log(response.data.result.stats.tests + ' tests run in ' + response.data.result.stats.time)
-          this.openRunDialog(response.data.result.stats.tests + ' tests run in ' + response.data.result.stats.time)
+      await this.createAttemptForSession({ exerciseId: this.exercise.id, sessionId: this.sessionId, solution })
 
-          this.consoleOutput = response.data.stdout
-          this.resultTest.length = 0
+      console.log(this.attempts)
 
-          response.data.result.tests.forEach((result) => {
-            result.stacktraceHidden = true
-            this.resultTest.push(result)
-          })
-        })
-        .catch((err) => {
-          console.log(err)
-          console.log(err.response)
-        })
+      await this.getLastAttemptForExercise({ exerciseId: this.exerciseId })
+
+      console.log(this.attempts)
     }
   }
 }
