@@ -101,6 +101,7 @@
             v-for="(exercise) in getExercisesBySessionId(sessionId)" :key="exercise.id"
             two-line
             @click="goToExercise(exercise.id)"
+            :style="(exercise.valid != null) ? 'background-color: ' + themes.Success : ''"
           >
             <v-list-item-content>
               <v-list-item-title
@@ -198,9 +199,11 @@
                       </v-btn>
                     </div>
 
-                    <div class="custom-ace-editor" ref="editorSolution">
-
-                    </div>
+                    <CodeEditor
+                      ref="editorSolution"
+                      :lang="exercise.lang"
+                      :defaultValue="(lastAttempt != null) ? lastAttempt.solution : 'loading...'"
+                    />
 
                   </v-card>
                 </v-col>
@@ -221,107 +224,96 @@
                       style="padding: 15px; overflow-x: auto; height: 74.5vh"
                       :style="getStyleTheme(themes.Light, 'color')">
 
-                      <div v-for="(result, index) in exercise.test_names" :key="result.name">
-
-                        <v-card
-                          v-if="(result.failure != undefined) && (!result.failure)"
-                          :color="themes.Success"
-                          dark
-                          style="margin: 10px 0px 0px 0px;"
-                          >
-                          <v-row>
-                            <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                              <v-icon style="padding-left: 15px">mdi-check</v-icon>
-                            </v-col>
-                            <v-col md="11">
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                        <v-card
-                          v-else-if="result.failure"
-                          :color="themes.Failure"
-                          dark
-                          style="margin: 10px 0px 0px 0px;"
-                          >
-                          <v-row>
-                            <v-col md="1" class="d-flex align-center" style="max-width: 40px">
-                              <v-icon style="padding-left: 15px">mdi-alert-circle</v-icon>
-                            </v-col>
-                            <v-col md="10">
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-content>{{result.failure.message}}</v-list-item-content>
-                                  <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
-                                  <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </v-col>
-
-                            <v-col md="1" style="max-width: 40px">
-                              <v-btn
-                                icon
-                                @click="closeResult(index)"
-                              >
-                                <v-icon>mdi-close-circle</v-icon>
-                              </v-btn>
-                              <v-btn
-                                icon
-                                v-if="result.stacktraceHidden"
-                                @click="result.stacktraceHidden = false"
-                              >
-                                <v-icon>mdi-chevron-down</v-icon>
-                              </v-btn>
-                              <v-btn
-                                icon
-                                v-if="!result.stacktraceHidden"
-                                @click="result.stacktraceHidden = true"
-                              >
-                                <v-icon>mdi-chevron-up</v-icon>
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                        <v-skeleton-loader
-                          v-else
-                          :loading="exercise.loading"
-                          transition="scale-transition"
-                          style="margin: 10px 0px 0px 0px;"
-                          type="image"
-                          dark
-                        >
+                      <div v-if="lastAttemptResults.tests != null" >
+                        <div v-for="(result) in lastAttemptResults.tests" :key="result.name">
                           <v-card
-                            :color="themes.DarkLight"
+                            v-if="result.failure"
+                            :color="themes.Failure"
+                            dark
+                            style="margin: 10px 0px 0px 0px;"
+                          >
+                            <v-list-item>
+                              <v-list-item-icon>
+                                <v-icon>mdi-alert-circle</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                {{result.failure.message}}
+                                <!-- Bug on hidden ! -->
+                                <code style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
+                                <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
+                              </v-list-item-content>
+                              <v-list-item-icon class="d-felx align-end">
+                                <v-btn
+                                  icon
+                                  v-if="false"
+                                >
+                                  <v-icon>mdi-chevron-up</v-icon>
+                                </v-btn>
+                                <v-btn
+                                  icon
+                                  v-else
+                                >
+                                  <v-icon>mdi-chevron-down</v-icon>
+                                </v-btn>
+                              </v-list-item-icon>
+                            </v-list-item>
+                          </v-card>
+                          <v-card
+                            v-else
+                            :color="themes.Success"
                             dark
                             style="margin: 10px 0px 0px 0px;"
                             >
                             <v-row>
                               <v-col md="1" class="d-flex align-center" style="max-width: 20px">
-                                <v-icon style="padding-left: 15px">mdi-dots-horizontal</v-icon>
+                                <v-icon style="padding-left: 15px">mdi-check</v-icon>
                               </v-col>
-                              <v-col md="11" style="padding-left: 25px">
+                              <v-col md="11">
                                 <v-list-item>
                                   <v-list-item-content>
-                                    <v-list-item-subtitle>{{result}}</v-list-item-subtitle>
+                                    <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
                                   </v-list-item-content>
                                 </v-list-item>
                               </v-col>
                             </v-row>
                           </v-card>
-                        </v-skeleton-loader>
+                        </div>
+                      </div>
+
+                      <div v-else>
+                        <div v-for="(result) in exercise.test_names" :key="result.name">
+                          <v-skeleton-loader
+                            :loading="exercise.loading"
+                            transition="scale-transition"
+                            style="margin: 10px 0px 0px 0px;"
+                            type="image"
+                            dark
+                          >
+                            <v-card
+                              :color="themes.DarkLight"
+                              dark
+                              style="margin: 10px 0px 0px 0px;"
+                              >
+                              <v-row>
+                                <v-col md="1" class="d-flex align-center" style="max-width: 20px">
+                                  <v-icon style="padding-left: 15px">mdi-dots-horizontal</v-icon>
+                                </v-col>
+                                <v-col md="11" style="padding-left: 25px">
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-list-item-subtitle>{{result}}</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-col>
+                              </v-row>
+                            </v-card>
+                          </v-skeleton-loader>
+                        </div>
                       </div>
 
                     </div>
                   </v-card>
                 </v-col>
-              </v-row>
-              <v-row>
               </v-row>
 
             </v-col>
@@ -334,19 +326,17 @@
 </template>
 
 <script>
+import CodeEditor from '@/components/CodeEditor.vue'
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 
-import ace from 'ace-builds/src-noconflict/ace'
-import 'ace-builds/src-noconflict/theme-monokai'
-import 'ace-builds/src-noconflict/mode-python'
-import 'ace-builds/webpack-resolver'
-
 export default {
-
+  components: {
+    CodeEditor
+  },
   data: () => ({
     instructionHidden: false,
     lang: 'python',
-    resultTest: [],
     editorSolution: null
   }),
   computed: {
@@ -420,16 +410,15 @@ export default {
     ...mapActions('attempts', ['createAttemptForSession']),
 
     async updateView () {
+      console.log(this.msg || 'null')
       await this.fetchExerciseForSession({ sessionId: this.sessionId, exerciseId: this.exerciseId })
-
-      console.log(this.exercise)
 
       await this.fetchLastAttemptForExercise({ sessionId: this.sessionId, exerciseId: this.exerciseId })
 
-      this.editorSolution = ace.edit(this.$refs.editorSolution)
+      this.editorSolution = this.$refs.editorSolution
 
       const solutionDefault = (this.lastAttempt != null) ? this.lastAttempt.solution : 'print("This is a solution for ' + this.exercise.title + '")'
-      this.initEditor(this.editorSolution, this.exercise.lang, solutionDefault)
+      this.editorSolution.updateView(solutionDefault)
     },
 
     logOut () {
@@ -437,38 +426,19 @@ export default {
     },
 
     goToExercise (exerciseId) {
-      this.$router.push({ name: 'Exercise', params: { moduleId: this.moduleId, sessionId: this.sessionId, exerciseId } })
+      if (exerciseId !== this.exerciseId) {
+        this.$router.push({ name: 'Exercise', params: { moduleId: this.moduleId, sessionId: this.sessionId, exerciseId } })
+      }
     },
 
     toggleInstructionHidden () {
       this.instructionHidden = !this.instructionHidden
     },
 
-    initEditor (editor, lang, defaultValue) {
-      editor.setTheme('ace/theme/monokai') // Global theme for
-      editor.session.setMode(`ace/mode/${lang}`)
-
-      editor.selection.addRange()
-
-      editor.setOptions({
-        selectionStyle: 'line',
-        cursorStyle: 'ace'
-      })
-
-      editor.resize() // Ensure the editor is the right size
-
-      // React to changes and update the v-model
-      editor.on('change', () => {
-        this.$emit('input', editor.getValue())
-      })
-
-      editor.setValue(defaultValue)
-    },
-
     async runSolution () {
       console.log('running solution...')
 
-      const solution = this.editorSolution.getValue()
+      const solution = this.editorSolution.editor.getValue()
 
       await this.createAttemptForSession({ exerciseId: this.exercise.id, sessionId: this.sessionId, solution })
 
@@ -477,10 +447,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.custom-ace-editor {
-  position: relative;
-  height: 34rem;
-}
-</style>

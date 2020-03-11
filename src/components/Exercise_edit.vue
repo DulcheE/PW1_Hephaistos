@@ -230,7 +230,7 @@
                       <v-list-item>
                         <v-list-item-content>
                           <v-list-item-content>{{result.failure.message}}</v-list-item-content>
-                          <code v-if="!result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
+                          <code :hidden="result.stacktraceHidden" style="font-size: 12px; padding: 5px">{{result.failure.stacktrace}}</code>
                           <v-list-item-subtitle>{{result.file}} - {{result.name}} - {{result.time}}ms</v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>

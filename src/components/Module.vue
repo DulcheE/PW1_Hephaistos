@@ -83,14 +83,14 @@
 
             <v-row>
               <v-col
-                v-for="(Exercise) in getExercisesBySessionId(Session.id)" :key="Exercise.id"
+                v-for="(exercise) in getExercisesBySessionId(Session.id)" :key="exercise.id"
                 cols="12"
                 md="3"
                 sm="6"
               >
                 <v-card
-                  @click="goToExercise(Session.id, Exercise.id)"
-                  :style="getStyleTheme(themes.DarkLight, 'background-color')"
+                  @click="goToExercise(Session.id, exercise.id)"
+                  :style="getStyleTheme((exercise.valid != null) ? themes.Success : themes.DarkLight, 'background-color')"
                 >
                   <v-list-item
                     style="height: 5em"
@@ -100,20 +100,20 @@
                         class="text-truncate"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
-                        <span>{{Exercise.title}}</span>
+                        <span>{{exercise.title}}</span>
                       </v-list-item-title>
                       <v-spacer/>
                       <v-list-item-subtitle
                         class="text-truncate"
                         :style="getStyleTheme(themes.Light, 'color')"
                       >
-                        {{Exercise.lang}}
+                        {{exercise.lang}}
                       </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-icon
                       :style="'color: ' + themes.Light"
                     >
-                      {{(Exercise.test_names != null) ? Exercise.test_names.length : '0'}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-thermostat-box</v-icon>
+                      {{(exercise.test_names != null) ? exercise.test_names.length : '0'}}<v-icon style="margin-left: 2px" :color="themes.Light">mdi-thermostat-box</v-icon>
                     </v-list-item-icon>
                   </v-list-item>
                 </v-card>

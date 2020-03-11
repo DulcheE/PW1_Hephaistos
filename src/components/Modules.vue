@@ -77,7 +77,7 @@
               >
                 <v-card
                   :href="'#/module/' + module.id + '/session/' + session.id + '/exercise/' + firstExerciseForSession(session.id).id"
-                  :style="getStyleTheme(themes.DarkLight, 'background-color')"
+                  :style="getStyleTheme((ExercisesForSessionValid(session.id)) ? themes.Success : themes.DarkLight, 'background-color')"
                 >
                   <v-list-item
                     style="height: 5em"
@@ -152,6 +152,16 @@ export default {
 
     firstExerciseForSession (sessionId) {
       return this.getExercisesBySessionId(sessionId)[0] || { title: 'loading' }
+    },
+
+    ExercisesForSessionValid (sessionId) {
+      let result = true
+
+      this.getExercisesBySessionId(sessionId).forEach(exercise => {
+        result = (exercise.valid)
+      })
+
+      return result
     }
   }
 }
