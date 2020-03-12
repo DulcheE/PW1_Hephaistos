@@ -1,5 +1,5 @@
 <template>
-    <div class="custom-ace-editor" ref="editor"/>
+  <div class="custom-ace-editor" ref="editor"/>
 </template>
 
 <script>
@@ -53,6 +53,6 @@ export default {
 <style scoped>
 .custom-ace-editor {
   position: relative;
-  height: 34rem;
+  height: 74.5vh;
 }
 </style>
