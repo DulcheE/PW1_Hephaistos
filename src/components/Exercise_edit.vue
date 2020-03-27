@@ -354,8 +354,6 @@ export default {
       this.exercise.template_regions_rw = regions.regionsRW
       this.exercise.tests = this.editorTests.editor.getValue()
 
-      console.log(this.exercise)
-
       this.updateExerciseForSession({ id: this.exerciseId, sessionId: this.sessionId, exercise: this.exercise })
     },
 

@@ -96,14 +96,7 @@ export default {
       let lines = ''
 
       for (let i = 0; i < this.regions.length; i++) {
-        console.log(`i : ${i} | admin : ${this.admin} | regionsRW[i] : ${this.regionsRW[i]}`)
-        console.log(`${this.admin === true} | ${(this.regionsRW[i] & 4) === 4}`)
-        console.log(this.admin || (this.regionsRW[i] & 4) === 4)
         if (this.admin || (this.regionsRW[i] & 4) === 4) {
-          console.log('here')
-          console.log(i)
-          console.log(this.regions)
-          console.log(this.regions[i])
           lines += this.regions[i]
         }
       }
