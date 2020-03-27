@@ -1,56 +1,4 @@
 <template>
-  <div
-    :style="getStyleTheme(themes.Base, 'background-color')"
-    style="height: 100%; padding-top: 30px">
-    <v-app-bar
-      app
-      dark
-    >
-      <div class="d-flex align-center"
-      >
-        <v-img
-          alt="Hephaistos Logo"
-          class="shrink mr-2"
-          contain
-          src="@/assets/hephaistos_logo.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Hephaistos Name"
-          class="shrink mt-1 d-none d-md-flex"
-          contain
-          src="@/assets/hephaistos_name_logo.png"
-          transition="fade-transition"
-          width="150"
-        />
-
-        <v-img
-          alt="Hephaistos Name"
-          class="shrink mt-1 d-none d-sm-flex d-md-none"
-          contain
-          src="@/assets/hephaistos_name_logo.png"
-          transition="fade-transition"
-          width="75"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <h1 :style="getStyleTheme(themes.Light, 'color')">Modules</h1>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        text
-        @click="logOut"
-      >
-        <span class="mr-2">Log out</span>
-        <v-icon>mdi-logout-variant</v-icon>
-      </v-btn>
-    </v-app-bar>
-
     <div
       class="mx-auto"
       style="padding: 20px; width: 80%"
@@ -102,12 +50,10 @@
         </v-col>
       </v-row>
     </div>
-    <div style="padding-top: 20px"/>
-  </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
 
@@ -125,30 +71,10 @@ export default {
     ...mapGetters('sessions', ['getSessionsByModuleId']),
     ...mapGetters('exercises', ['getExercisesBySessionId'])
   },
-  async mounted () {
-    await this.fetchModules()
+  mounted () {
 
-    await Promise.all(
-      this.modules.map(module => {
-        return this.fetchSessionsForModule({ moduleId: module.id })
-      })
-    )
-
-    await Promise.all(
-      this.sessions.map(session => {
-        return this.fetchExercisesForSession({ sessionId: session.id })
-      })
-    )
   },
   methods: {
-    // Actions
-    ...mapActions('modules', ['fetchModules']),
-    ...mapActions('sessions', ['fetchSessionsForModule']),
-    ...mapActions('exercises', ['fetchExercisesForSession']),
-
-    logOut () {
-      this.$router.push({ name: 'Login' })
-    },
 
     firstExerciseForSession (sessionId) {
       return this.getExercisesBySessionId(sessionId)[0] || { title: 'loading' }

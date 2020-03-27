@@ -6,7 +6,10 @@
       style="padding: 20px;"
       :style="'background-color :' + themes.Dark"
     >
-      <h2 :style="'color :' + themes.Light" style="padding-left: 5%">Tests :</h2>
+      <div class="d-flex align-center" style="padding-left: 3vh">
+        <v-icon :color="themes.Light">mdi-thermostat-box</v-icon>
+        <h2 :style="'color :' + themes.Light"><label>Tests :</label></h2>
+      </div>
 
       <v-divider/>
 

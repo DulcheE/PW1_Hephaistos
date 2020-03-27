@@ -146,7 +146,7 @@ export default {
       v => !!v || 'E-mail is required',
       v => /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'E-mail must be valid'
     ],
-    password: 'BZzCqAowMD',
+    password: 'p9RPx46qOT',
     passwordRules: [
       v => !!v || 'Password is required',
       v => (v && v.length >= 10) || 'Password must be more than 10 characters'

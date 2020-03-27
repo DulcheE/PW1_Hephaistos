@@ -22,10 +22,11 @@ export default {
   mounted () {
     this.editor = ace.edit(this.$refs.editor)
 
-    this.updateView(this.defaultValue)
+    this.updateView(this.defaultValue || 'loading...')
   },
 
   methods: {
+
     updateView (solutionDefault) {
       this.editor.setTheme('ace/theme/monokai') // Global theme for
       this.editor.session.setMode(`ace/mode/${this.lang}`)
@@ -45,6 +46,12 @@ export default {
       })
 
       this.editor.setValue(solutionDefault)
+    }
+  },
+
+  watch: {
+    lang: function () {
+      this.editor.session.setMode(`ace/mode/${this.lang}`)
     }
   }
 }
